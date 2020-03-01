@@ -20,7 +20,7 @@ void init()
 
 double update(double fire[ROWS][COLS], int row, int col) {
 
-	double value = fire[row][col] * 0.95;
+	double value = fire[row][col] * 0.1;
 
 	if (row>0) {		value += fire[row-1][col] * 0.1;	}
 	if (col>0) {		value += fire[row][col-1] * 0.1;	}
@@ -41,11 +41,15 @@ void update()
 		for (int col=0; col<COLS; col++) {
 			temp[row][col] = update(fire,row,col);
 
-			std::cout << temp[row][col] << std::endl;
+			std::cout << temp[row][col] << ", ";		
 		}
+		std::cout << std::endl;
+
 	}
 
 	std::copy(&temp[0][0], &temp[0][0]+ROWS*COLS,&fire[0][0]);
+
+	fire[0][COLS/2]=0.95;
 
 }
 
@@ -113,6 +117,38 @@ int fromHsv(double hue, double sat, double val)
 int getColor(double value) {
 	double color = std::max(value,0.99);
 	return fromHsv(color,color,color);
+}
+
+int getColor2(double value) 
+{
+	// http://stackoverflow.com/questions/2245842/sorting-colors-in-matlab</url>
+
+	double low, high;
+
+	double redMin, redMax, greenMin, greenMax, blueMin, blueMax;
+
+	if (value <= 0.5) {
+		low = 0.0;
+		high = 0.5;
+
+		redMin=0.0; redMax=1.0; greenMin=0.0; greenMax=0.0; blueMin=0.0; blueMax=0.0;
+
+	} else {
+		low=0.5;
+		high=1.0;
+
+
+		redMin=1.0; redMax=1.0; greenMin=0.0; greenMax=1.0; blueMin=0.0; blueMax=1.0;
+
+	}
+
+	double r = (value-low)/(high-low);
+
+	double red = redMin + r * (redMax - redMin);
+	double green = greenMin + r * (greenMax - greenMin);
+	double blue = blueMin + r * (blueMax - blueMin);
+
+	return (((int)(red * 255))<<16) + (((int)(green * 255))<<8) + (int)(blue * 255);
 }
 
 Area getArea(int row, int col) {

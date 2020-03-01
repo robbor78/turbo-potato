@@ -22,7 +22,7 @@ void draw(Display* di, Window wi, GC gc)
 		for (int col=0; col<COLS; col++) {
 
 			double value = fire[row][col];
-			int color = getColor(value);
+			int color = getColor2(value);
 
 			Area area = getArea(row,col);
 

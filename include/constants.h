@@ -5,7 +5,7 @@
 #define HEIGHT 480
 
 #define ROWS 3
-#define COLS 3
+#define COLS 3 
 
 #endif 
 

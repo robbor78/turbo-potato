@@ -22,6 +22,7 @@ double update(double fire[ROWS][COLS], int row, int col);
 void update();
 int fromHsv(double hue, double sat, double val);
 int getColor(double value);
+int getColor2(double value);
 Area getArea(int row, int col);
 
 #endif
