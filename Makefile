@@ -16,7 +16,7 @@ BDIR=build
 EXE=fire
 EPATH=$(BDIR)/$(EXE)
 
-LIBS=-lX11
+LIBS=-lX11 -lspdlog
 
 ALL: DIRECTORIES $(EPATH)
 
@@ -27,10 +27,10 @@ $(BDIR):
 $(ODIR):
 	$(MKDIR_P) $(ODIR)
 
-_DEPS=fire.h
+_DEPS=fire_algo.h constants.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = fire.o
+_OBJ = fire.o fire_algo.o
 OBJ=$(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: $(SDIR)/%.cc $(DEPS)
