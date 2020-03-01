@@ -16,9 +16,15 @@ BDIR=build
 EXE=fire
 EPATH=$(BDIR)/$(EXE)
 
+INC_TEST=-I .
+SDIR_TEST=test
+EXE_TEST=firetest
+EPATH_TEST=$(BDIR)/$(EXE_TEST)
+
+
 LIBS=-lX11 -lspdlog
 
-ALL: DIRECTORIES $(EPATH)
+ALL: DIRECTORIES $(EPATH) $(EPATH_TEST)
 
 DIRECTORIES: $(BDIR) $(ODIR)
 
@@ -33,10 +39,19 @@ DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 _OBJ = fire.o fire_algo.o
 OBJ=$(patsubst %,$(ODIR)/%,$(_OBJ))
 
+_OBJ_TEST = test.o $(filter-out fire.o, $(_OBJ))
+OBJ_TEST=$(patsubst %,$(ODIR)/%,$(_OBJ_TEST))
+
 $(ODIR)/%.o: $(SDIR)/%.cc $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
+$(ODIR)/%.o: $(SDIR_TEST)/%.cc $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
 $(EPATH): $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+$(EPATH_TEST): $(OBJ_TEST)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean

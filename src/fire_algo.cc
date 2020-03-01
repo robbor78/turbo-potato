@@ -30,7 +30,7 @@ double update(double fire[ROWS][COLS], int row, int col) {
 	if (row>0 && col<COLS) {		value += fire[row-1][col+1] * 0.1;	}
 	if (row<ROWS && col<COLS) {		value += fire[row+1][col+1] * 0.1;	}
 	if (row<ROWS && col>0) {		value += fire[row+1][col-1] * 0.1;	}
-	return value;
+	return std::min(value,1.0);
 }
 
 void update()
@@ -40,6 +40,8 @@ void update()
 	for (int row=0; row<ROWS; row++) {
 		for (int col=0; col<COLS; col++) {
 			temp[row][col] = update(fire,row,col);
+
+			std::cout << temp[row][col] << std::endl;
 		}
 	}
 

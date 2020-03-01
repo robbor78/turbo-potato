@@ -17,6 +17,7 @@ void drawpixel(Display* di, Window wi, GC gc, int x, int y, int color)
 void draw(Display* di, Window wi, GC gc)
 {
 
+	spdlog::info("Drawing...");
 	for (int row=0; row<ROWS; row++) {
 		for (int col=0; col<COLS; col++) {
 
@@ -41,6 +42,7 @@ void draw(Display* di, Window wi, GC gc)
 			}
 		}
 	}
+	spdlog::info("Draw done");
 }
 
 int main() 
@@ -81,11 +83,11 @@ int main()
 			quit = 1; // quit if someone presses a key
 		if (ev.type == Expose) {
 			drawpixel(di, wi, gc, 639, 479, 0x000000); //green
-			//update();
-			draw(di,wi,gc);
 		}
 
 
+		update();
+		draw(di,wi,gc);
 
 	}
 	XFreeGC(di, gc);
