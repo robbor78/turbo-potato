@@ -4,8 +4,8 @@
 #define WIDTH 640
 #define HEIGHT 480
 
-#define ROWS 3
-#define COLS 3 
+#define ROWS 30
+#define COLS 30 
 
 #endif 
 

@@ -1,7 +1,12 @@
 #include "fire_algo.h"
 
+#include <random>
 
 double fire[ROWS][COLS] = {0};
+
+std::default_random_engine generator;
+std::uniform_int_distribution<int> distCol(1,COLS);
+std::uniform_int_distribution<int> distValue(1,100);
 
 void init()
 {
@@ -20,12 +25,12 @@ void init()
 
 double update(double fire[ROWS][COLS], int row, int col) {
 
-	double value = fire[row][col] * 0.1;
+	double value = fire[row][col] * 0.06;
 
-	if (row>0) {		value += fire[row-1][col] * 0.1;	}
-	if (col>0) {		value += fire[row][col-1] * 0.1;	}
-	if (row<ROWS) {		value += fire[row+1][col] * 0.1;	}
-	if (col<COLS) {		value += fire[row][col+1] * 0.1;	}
+	if (row>0) {		value += fire[row-1][col] * 0.15;	}
+	if (col>0) {		value += fire[row][col-1] * 0.15;	}
+	if (row<ROWS) {		value += fire[row+1][col] * 0.15;	}
+	if (col<COLS) {		value += fire[row][col+1] * 0.15;	}
 	if (row>0 && col>0) {		value += fire[row-1][col-1] * 0.1;	}
 	if (row>0 && col<COLS) {		value += fire[row-1][col+1] * 0.1;	}
 	if (row<ROWS && col<COLS) {		value += fire[row+1][col+1] * 0.1;	}
@@ -41,15 +46,15 @@ void update()
 		for (int col=0; col<COLS; col++) {
 			temp[row][col] = update(fire,row,col);
 
-			std::cout << temp[row][col] << ", ";		
+			//			std::cout << temp[row][col] << ", ";		
 		}
-		std::cout << std::endl;
+		//	std::cout << std::endl;
 
 	}
 
 	std::copy(&temp[0][0], &temp[0][0]+ROWS*COLS,&fire[0][0]);
 
-	fire[0][COLS/2]=0.95;
+	fire[0][distCol(generator)%COLS]=((double)distValue(generator))/100.0;
 
 }
 
