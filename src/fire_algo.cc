@@ -16,9 +16,9 @@ void init()
 	for (int row=0; row<ROWS; row++) {
 
 		for (int col=0; col<COLS; col++) {
-			std::cout << fire[row][col] << ",";
+			//			std::cout << fire[row][col] << ",";
 		}
-		std::cout << std::endl;
+		//	std::cout << std::endl;
 	}
 
 }
@@ -54,8 +54,9 @@ void update()
 
 	std::copy(&temp[0][0], &temp[0][0]+ROWS*COLS,&fire[0][0]);
 
-	fire[0][distCol(generator)%COLS]=((double)distValue(generator))/100.0;
-
+	if ((int)distValue(generator) > 98) {
+		fire[0][distCol(generator)%COLS]=((double)distValue(generator))/100.0;
+	}
 }
 
 int fromHsv(double hue, double sat, double val)
