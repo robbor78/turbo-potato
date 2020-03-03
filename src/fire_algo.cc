@@ -27,10 +27,10 @@ double transfer(double fire[ROWS][COLS], int row, int col, double gain)
 {
 	if (row>=0 && row<ROWS && col>=0 && col<COLS) 
 	{
-		double div=3.0;
+		double div=5.0;
 		if (col==0 || col==COLS-1) 
 		{
-			div=2.0;
+			div=3.0;
 		}
 		return gain * fire[row][col] / div;
 	}
@@ -39,14 +39,16 @@ double transfer(double fire[ROWS][COLS], int row, int col, double gain)
 
 double update(double fire[ROWS][COLS], int row, int col) {
 
-	double gain=0.5;
-	double loss=0.01;
+	double gain=0.4;
+	double loss=0.005;
 
 	double value = fire[row][col] * (1.0-gain-loss);
 
 	value+=transfer(fire, row-1,col, gain);
 	value+=transfer(fire, row-1,col-1, gain);
 	value+=transfer(fire, row-1,col+1, gain);
+	value+=transfer(fire, row,col-1, gain);
+	value+=transfer(fire, row,col+1, gain);
 
 	/*	if (row>0) {		value += fire[row-1][col] * 0.25;	}
 				if (col>0) {		value += fire[row][col-1] * 0.20;	}
@@ -78,9 +80,9 @@ void update()
 
 	std::copy(&temp[0][0], &temp[0][0]+ROWS*COLS,&fire[0][0]);
 
-	//if ((int)distValue(generator) > 35) 
+	if ((int)distValue(generator) > 35) 
 	{
-		fire[0][(int)(COLS/2.0)]=1.0;
+		//	fire[0][(int)(COLS/2.0)]=1.0;
 		fire[0][distCol(generator)%COLS]=1.0;//((double)distValue(generator))/100.0;
 	}
 }
@@ -151,27 +153,35 @@ int getColor(double value) {
 	return fromHsv(color,color,color);
 }
 
+#define MAX_COLOURS 5
+double colourMap[MAX_COLOURS][4] = {
+	{0.0,  0.0,0.0,0.0},
+	{0.04,  1.0,0.2,0.2},
+	{0.1,  1.0,0.7,0.2},
+	{0.9,  1.0,0.9,0.3},
+	{1.0,  1.0,1.0,1.0}
+};
+
 int getColor2(double value) 
 {
 	// http://stackoverflow.com/questions/2245842/sorting-colors-in-matlab</url>
 
-	double low, high;
+	double low=colourMap[0][0], high=colourMap[1][0];
 
-	double redMin, redMax, greenMin, greenMax, blueMin, blueMax;
-
-	if (value <= 0.5) {
-		low = 0.0;
-		high = 0.5;
-
-		redMin=0.0; redMax=1.0; greenMin=0.0; greenMax=0.0; blueMin=0.0; blueMax=0.0;
-
-	} else {
-		low=0.5;
-		high=1.0;
+	double redMin=colourMap[0][1], redMax=colourMap[1][1], greenMin=colourMap[0][2], greenMax=colourMap[1][2], blueMin=colourMap[0][3], blueMax=colourMap[1][3];
 
 
-		redMin=1.0; redMax=1.0; greenMin=0.0; greenMax=1.0; blueMin=0.0; blueMax=1.0;
-
+	int i = 0;
+	while (value > high && i<MAX_COLOURS) {
+		i++;
+		low=high;
+		redMin = redMax;
+		greenMin = greenMax;
+		blueMin = blueMax;
+		high = colourMap[i][0];
+		redMax = colourMap[i][1];
+		greenMax = colourMap[i][2];
+		blueMax = colourMap[i][3];
 	}
 
 	double r = (value-low)/(high-low);
