@@ -23,18 +23,42 @@ void init()
 
 }
 
+double transfer(double fire[ROWS][COLS], int row, int col, double gain) 
+{
+	if (row>=0 && row<ROWS && col>=0 && col<COLS) 
+	{
+		double div=3.0;
+		if (col==0 || col==COLS-1) 
+		{
+			div=2.0;
+		}
+		return gain * fire[row][col] / div;
+	}
+	return 0.0;
+}
+
 double update(double fire[ROWS][COLS], int row, int col) {
 
-	double value = fire[row][col] * 0.06;
+	double gain=0.5;
+	double loss=0.01;
 
-	if (row>0) {		value += fire[row-1][col] * 0.15;	}
-	if (col>0) {		value += fire[row][col-1] * 0.15;	}
-	if (row<ROWS) {		value += fire[row+1][col] * 0.15;	}
-	if (col<COLS) {		value += fire[row][col+1] * 0.15;	}
-	if (row>0 && col>0) {		value += fire[row-1][col-1] * 0.1;	}
-	if (row>0 && col<COLS) {		value += fire[row-1][col+1] * 0.1;	}
-	if (row<ROWS && col<COLS) {		value += fire[row+1][col+1] * 0.1;	}
-	if (row<ROWS && col>0) {		value += fire[row+1][col-1] * 0.1;	}
+	double value = fire[row][col] * (1.0-gain-loss);
+
+	value+=transfer(fire, row-1,col, gain);
+	value+=transfer(fire, row-1,col-1, gain);
+	value+=transfer(fire, row-1,col+1, gain);
+
+	/*	if (row>0) {		value += fire[row-1][col] * 0.25;	}
+				if (col>0) {		value += fire[row][col-1] * 0.20;	}
+	//if (row<ROWS) {		value += fire[row+1][col] * 0.1;	}
+	if (col<COLS) {		value += fire[row][col+1] * 0.20;	}
+	if (row>0 && col>0) {		value += fire[row-1][col-1] * 0.25;	}
+	if (row>0 && col<COLS) {		value += fire[row-1][col+1] * 0.25;	}
+	//if (row<ROWS && col<COLS) {		value += fire[row+1][col+1] * 0.1;	}
+	//if (row<ROWS && col>0) {		value += fire[row+1][col-1] * 0.1;	}
+		*/
+	std::cout << value << std::endl;
+
 	return std::min(value,1.0);
 }
 
@@ -54,8 +78,10 @@ void update()
 
 	std::copy(&temp[0][0], &temp[0][0]+ROWS*COLS,&fire[0][0]);
 
-	if ((int)distValue(generator) > 98) {
-		fire[0][distCol(generator)%COLS]=((double)distValue(generator))/100.0;
+	//if ((int)distValue(generator) > 35) 
+	{
+		fire[0][(int)(COLS/2.0)]=1.0;
+		fire[0][distCol(generator)%COLS]=1.0;//((double)distValue(generator))/100.0;
 	}
 }
 
@@ -157,8 +183,10 @@ int getColor2(double value)
 	return (((int)(red * 255))<<16) + (((int)(green * 255))<<8) + (int)(blue * 255);
 }
 
-Area getArea(int row, int col) {
+Area getArea(int _row, int col) {
 	Area a;
+
+	int row = ROWS-_row-1;
 
 	{
 		double ratio = (double)WIDTH/(double)COLS;

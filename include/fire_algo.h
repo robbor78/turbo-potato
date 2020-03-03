@@ -19,6 +19,7 @@ struct Area{
 
 void init();
 double update(double fire[ROWS][COLS], int row, int col);
+double transfer(double fire[ROWS][COLS], int row, int col, double gain);
 void update();
 int fromHsv(double hue, double sat, double val);
 int getColor(double value);
